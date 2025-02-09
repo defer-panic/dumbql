@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  build:
+  checks:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,10 +23,7 @@ jobs:
 
       # Install Task (the Task runner from https://taskfile.dev)
       - name: Install Task
-        run: |
-          curl -sL https://taskfile.dev/install.sh | sh
-          # Move the task binary into a directory in PATH
-          sudo mv task /usr/local/bin/
+        uses: arduino/setup-task@v2
 
       # Run the unit tests via Task (assumes a "test" task exists in your Taskfile)
       - name: Run Go Unit Tests
