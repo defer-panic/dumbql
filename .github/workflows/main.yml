@@ -11,24 +11,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Check out the repository so we can run our tasks
-      - name: Checkout code
+      - name: checkout
         uses: actions/checkout@v3
 
-      # Set up Go (adjust the version as needed)
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      - name: setup-go
+        uses: actions/setup-go@v5
         with:
           go-version: '1.23'
 
-      # Install Task (the Task runner from https://taskfile.dev)
-      - name: Install Task
-        uses: arduino/setup-task@v2
+      - name: unit-tests
+        run: |
+              go test ./... -coverprofile=coverage.out
+              cat coverage.out | grep -v "query/parser.gen.go" > coverage_filtered.out
+              go tool cover -func=coverage_filtered.out
 
-      # Run the unit tests via Task (assumes a "test" task exists in your Taskfile)
-      - name: Run Go Unit Tests
-        run: task test
-
-      # Run the linter via Task (assumes a "lint" task exists in your Taskfile)
-      - name: Run Go Linter
-        run: task lint
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.62.0
