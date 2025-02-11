@@ -1,5 +1,8 @@
 # dumbql ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/defer-panic/dumbql) ![GitHub License](https://img.shields.io/github/license/defer-panic/dumbql) ![GitHub Tag](https://img.shields.io/github/v/tag/defer-panic/dumbql) [![Go Report Card](https://goreportcard.com/badge/github.com/defer-panic/dumbql)](https://goreportcard.com/report/github.com/defer-panic/dumbql) [![CI](https://github.com/defer-panic/dumbql/actions/workflows/main.yml/badge.svg)](https://github.com/defer-panic/dumbql/actions/workflows/main.yml) [![Coverage Status](https://coveralls.io/repos/github/defer-panic/dumbql/badge.svg?branch=main)](https://coveralls.io/github/defer-panic/dumbql?branch=main) [![Go Reference](https://pkg.go.dev/badge/github.com/defer-panic/dumbql.svg)](https://pkg.go.dev/github.com/defer-panic/dumbql)
 
+> [!WARNING]  
+> This version of DumbQL is archived. Further development will take place here: https://github.com/tomakado/dumbql
+
 Simple (dumb) query language and parser for Go. 
 
 ## Features
