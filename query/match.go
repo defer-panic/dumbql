@@ -1,7 +1,6 @@
 package query
 
 import (
-	"reflect"
 	"strings"
 )
 
@@ -11,61 +10,6 @@ type Matcher interface {
 	MatchNot(target any, expr Expr) bool
 	MatchField(target any, field string, value Valuer, op FieldOperator) bool
 	MatchValue(target any, value Valuer, op FieldOperator) bool
-}
-
-// DefaultMatcher is a basic implementation of the Matcher interface for evaluating query expressions against structs.
-// It supports struct tags using the `dumbql` tag name, which allows you to specify a custom field name.
-type DefaultMatcher struct{}
-
-func (m *DefaultMatcher) MatchAnd(target any, left, right Expr) bool {
-	return left.Match(target, m) && right.Match(target, m)
-}
-
-func (m *DefaultMatcher) MatchOr(target any, left, right Expr) bool {
-	return left.Match(target, m) || right.Match(target, m)
-}
-
-func (m *DefaultMatcher) MatchNot(target any, expr Expr) bool {
-	return !expr.Match(target, m)
-}
-
-// MatchField matches a field in the target struct using the provided value and operator. It supports struct tags using
-// the `dumbql` tag name, which allows you to specify a custom field name. If struct tag is not provided, it will use
-// the field name as is.
-func (m *DefaultMatcher) MatchField(target any, field string, value Valuer, op FieldOperator) bool {
-	t := reflect.TypeOf(target)
-
-	if t.Kind() == reflect.Ptr {
-		t = t.Elem()
-	}
-
-	if t.Kind() != reflect.Struct {
-		return false
-	}
-
-	for i := 0; i < t.NumField(); i++ {
-		f := t.Field(i)
-
-		fname := f.Name
-		if f.Tag.Get("dumbql") != "" {
-			fname = f.Tag.Get("dumbql")
-		}
-
-		if fname == field {
-			v := reflect.ValueOf(target)
-			if v.Kind() == reflect.Ptr {
-				v = v.Elem()
-			}
-
-			return m.MatchValue(v.Field(i).Interface(), value, op)
-		}
-	}
-
-	return false
-}
-
-func (m *DefaultMatcher) MatchValue(target any, value Valuer, op FieldOperator) bool {
-	return value.Match(target, op)
 }
 
 func (b *BinaryExpr) Match(target any, matcher Matcher) bool {

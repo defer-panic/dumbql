@@ -29,6 +29,7 @@ Simple (dumb) query language and parser for Go.
 - One-of/In expressions (`occupation = [designer, "ux analyst"]`)
 - Schema validation
 - Drop-in usage with [squirrel](https://github.com/Masterminds/squirrel) query builder or SQL drivers directly
+- Struct matching with `dumbql` struct tag
 
 ## Examples
 
@@ -143,6 +144,7 @@ import (
   "fmt"
 
   "github.com/defer-panic/dumbql"
+  "github.com/defer-panic/dumbql/match"
   "github.com/defer-panic/dumbql/query"
 )
 
@@ -196,7 +198,7 @@ func main() {
   ast, _ := query.Parse("test", []byte(q))
   expr := ast.(query.Expr)
 
-  matcher := &query.DefaultMatcher{}
+  matcher := &match.StructMatcher{}
 
   filtered := make([]User, 0, len(users))
 
