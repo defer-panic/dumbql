@@ -13,6 +13,8 @@ type Matcher interface {
 	MatchValue(target any, value Valuer, op FieldOperator) bool
 }
 
+// DefaultMatcher is a basic implementation of the Matcher interface for evaluating query expressions against structs.
+// It supports struct tags using the `dumbql` tag name, which allows you to specify a custom field name.
 type DefaultMatcher struct{}
 
 func (m *DefaultMatcher) MatchAnd(target any, left, right Expr) bool {
@@ -27,6 +29,9 @@ func (m *DefaultMatcher) MatchNot(target any, expr Expr) bool {
 	return !expr.Match(target, m)
 }
 
+// MatchField matches a field in the target struct using the provided value and operator. It supports struct tags using
+// the `dumbql` tag name, which allows you to specify a custom field name. If struct tag is not provided, it will use
+// the field name as is.
 func (m *DefaultMatcher) MatchField(target any, field string, value Valuer, op FieldOperator) bool {
 	t := reflect.TypeOf(target)
 
@@ -47,7 +52,12 @@ func (m *DefaultMatcher) MatchField(target any, field string, value Valuer, op F
 		}
 
 		if fname == field {
-			return m.MatchValue(reflect.ValueOf(target).Field(i).Interface(), value, op)
+			v := reflect.ValueOf(target)
+			if v.Kind() == reflect.Ptr {
+				v = v.Elem()
+			}
+
+			return m.MatchValue(v.Field(i).Interface(), value, op)
 		}
 	}
 
